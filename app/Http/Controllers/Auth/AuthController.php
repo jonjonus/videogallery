@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 //TODO to disable registration switch these line
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-//use Illuminate\Foundation\Auth\AuthenticatesUsers;
+//use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\AuthenticatesUsers; //No registration
 
 class AuthController extends Controller
 {
@@ -25,8 +25,8 @@ class AuthController extends Controller
     |
     */
     //TODO to disable registration switch these line
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-//    use AuthenticatesUsers, ThrottlesLogins;
+//    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesUsers, ThrottlesLogins; // No registration
 
     /**
      * Where to redirect users after login / registration.
