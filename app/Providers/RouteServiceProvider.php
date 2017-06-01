@@ -27,6 +27,18 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot($router);
+        $router->model('clients',   'App\Client');
+        $router->model('metatexts', 'App\Metatext');
+        $router->model('tags',      'App\Tag');
+        $router->model('tagtypes',  'App\Tagtype');
+        $router->model('videos',    'App\Video');
+        $router->model('playlists', 'App\Playlist');
+
+        //ejemplo con algo de logica agregado
+        // $router->bind('tags', function($id)
+        // {
+        //     return \App\Tag::somtehing()->findOrFail($id);
+        // });
     }
 
     /**

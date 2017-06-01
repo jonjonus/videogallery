@@ -1,0 +1,1 @@
+<a class="btn btn-xs btn-info" href="{{ action($action, [$id]) }}" role="button"><i class="fa fa-btn fa-pencil"></i></a>
