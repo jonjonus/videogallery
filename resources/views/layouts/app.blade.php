@@ -59,20 +59,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
     {{-- 4. SweetAlert --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-
-    {{-- Others --}}
+    {{-- 5. Moment --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.js"></script>
-    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.4/tinymce.jquery.min.js"></script>--}}
-    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.4/jquery.tinymce.min.js"></script>--}}
-    <script>
-        $(function () {
-            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN' : '{{ csrf_token() }}' } });
-        });
-    </script>
+
     @yield('variables')
     @yield('scripts')
     @yield('modals')
-    {{--<script src="/js/app.js"></script>--}}
+    <script>
+        var csrf = '{{ csrf_token() }}';
+    </script>
+    <script src="/js/app.js"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 </body>
 </html>
