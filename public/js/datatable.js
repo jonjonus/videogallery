@@ -17,7 +17,9 @@ $(document).ready(function() {
 	$("#row-playlist").on("click", ".btn-playlist-panel-control-details", playlistPanelDetails);
 
 	//bind function to pop up bigger image
-	$("#row-playlist").on("mouseenter mouseleave", ".myThumbnail", imageOverlayToggle);
+	$("#row-playlist").on("mouseenter", ".myThumbnail", imageOverlayShow);
+	$("#row-playlist").on("mouseleave", ".myThumbnail", imageOverlayHide);
+
     //bind function to play videos
     $("#datatable").on("click", ".myThumbnail", function () {
 		var id = datatable.row( $(this).parent().get(0) ).data().id;
@@ -690,6 +692,8 @@ function configure_columns_editor() {
 }
 
 function playVideo(id) {
+	console.log('Play video '+id);
+    $(".img-overlay").hide();
     $.ajax({ method: "GET", url: '/videos/'+id+'/embed'})
         .done(function( response ) {
             if (response.result == 'ok') {
@@ -744,7 +748,11 @@ function countVideos(dt, type) {
     };
 }
 
-function imageOverlayToggle() {
-	$(".img-overlay").children('img').attr('src', $(this).attr('src'));
-	$(".img-overlay").toggle();
+function imageOverlayShow(e) {
+    $(".img-overlay").children('img').attr('src', $(this).attr('src'));
+    $(".img-overlay").show();
+}
+
+function imageOverlayHide(e) {
+	$(".img-overlay").hide();
 }
