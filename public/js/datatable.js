@@ -104,6 +104,10 @@ $(document).ready(function() {
 				label: "Title",
 				name: "title"
 			},
+            {
+                label: "Dur",
+                name: "duration"
+            },
 			{
 				label: "Description",
 				name: "description"
@@ -213,6 +217,7 @@ $(document).ready(function() {
             className: "no-editor",
         },
 		{   data: "title" },
+		{   data: "duration" },
 		{
 			data: "description",
 			render: function ( data, type, row ) {

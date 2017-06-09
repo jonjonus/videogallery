@@ -418,6 +418,7 @@ class VideosController extends Controller
             $video_arr['title'] = $video->title;
             $video_arr['name'] = $video->name;
             $video_arr['description'] = $video->description;
+            $video_arr['duration'] = $video->duration;
             $video_arr['produced_at'] = $video->produced_at;
             $video_arr['url'] = $video->url;
             $video_arr['ignore'] = ($video->ignore ? 1 : 0);

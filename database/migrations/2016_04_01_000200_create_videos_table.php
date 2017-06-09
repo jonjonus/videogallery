@@ -30,9 +30,12 @@ class CreateVideosTable extends Migration
             $table->string('cloud_id');
             $table->integer('service_id')->unsigned()->nullable();
             $table->integer('client_id')->unsigned()->nullable();
+            $table->integer('duration')->unsigned()->nullable();
+            $table->longText('embed');
 
             $table->timestamps();
 
+            $table->softDeletes();
 
             $table->foreign('client_id')
                 ->references('id')

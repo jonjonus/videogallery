@@ -117,7 +117,7 @@ class YoutubeController extends Controller
             } else {
                 $options = [
                     'per_page' => $per_page,
-                    'fields' => 'uri, pictures.uri, pictures.active, name, description, release_time, link, stats.plays, embed.html',
+                    'fields' => 'uri, duration, pictures.uri, pictures.active, name, description, release_time, link, stats.plays, embed.html',
                     //                'filter'             => 'upload_date',
                     //                'filter_upload_date' => $period, // "day", "month", or "year"
                     'sort' => 'date',
@@ -158,6 +158,7 @@ class YoutubeController extends Controller
                 $video["title"]        = $object->name;
                 $video["name"]         = $object->name;
                 $video["description"]  = ($object->description ? $object->description : '');
+                $video["duration"]     = $object->duration;
                 $video["produced_at"]  = $object->release_time; //Also has: created_time, modified_time
                 $video["url"]          = $object->link;
                 $video["count_watch"]  = $object->stats->plays;

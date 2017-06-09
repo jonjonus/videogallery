@@ -12,13 +12,15 @@
             {{-- 1 --}}<th>Thumbnail</th>
             {{-- 2 --}}<th></th> {{-- Actions --}}
             {{-- 3 --}}<th>Title</th>
-            {{-- 4 --}}<th>Description</th>
-            {{-- 5 --}}<th>Produced</th>
-            {{-- 6 --}}<th>Client</th>
-            {{-- 7 --}}<th>Name</th>
-            {{-- 8 --}}<th>New</th>     <?php $pos_new_column   = 8;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
-            {{-- 9 --}}<th>Ignore</th> <?php $pos_ignore_column = 9;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
-            {{-- 10--}}<th>Meta</th>    <?php $pos_meta_column  = 10; $pos_first_tags_column = 11; ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 4 --}}<th>Duration</th>
+            {{-- 5 --}}<th>Description</th>
+            {{-- 6 --}}<th>Produced</th>
+            {{-- 7 --}}<th>Client</th>
+            {{-- 8 --}}<th>Name</th>
+            {{-- 9 --}}<th>New</th>     <?php $pos_new_column   = 8;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 10--}}<th>Ignore</th> <?php $pos_ignore_column = 9;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 11--}}<th>Meta</th>    <?php $pos_meta_column  = 11; ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 12--}} <?php $pos_first_tags_column = 12; ?>
             @foreach ($tagTypes as $tagType)
                 <th>{{ $tagType->name }}</th>
             @endforeach
@@ -29,6 +31,7 @@
             <td></td> {{-- Thumbnail --}}
             <td></td> {{-- Actions --}}
             <td><input class="search-box" type="text" placeholder="Search"></td>{{-- Title --}}
+            <td><input class="search-box" type="text" placeholder="Search"></td>{{-- Duration --}}
             <td><input class="search-box" type="text" placeholder="Search"></td>{{-- Description --}}
             <td><input class="search-box" type="text" placeholder="Search"></td>{{-- Produced --}}
             <td><input class="search-box" type="text" placeholder="Search"></td>{{-- Client --}}

@@ -57,7 +57,8 @@ class Video extends Model
 		'count_likes',
 		'ignore',
 		'new',
-        'client_id'
+        'client_id',
+        'duration'
     	];
 
     protected $dates = ['produced_at','deleted_at'];
