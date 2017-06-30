@@ -81,9 +81,6 @@ class PlaylistsController extends Controller
 	    $videos = Video::InPlaylist()->get();
 	    $playlist = Playlist::create($request->all());
         $playlist->url = "http://homestead.app/player/".$playlist->title;
-        if(!$playlist->description){
-            $playlist->description = 'This is a quick playlist without a description';
-        }
         $playlist->save();
         $playlist->videos()->sync($videos);
 

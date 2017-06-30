@@ -31,7 +31,36 @@ class VideosController extends Controller
 
     public function index()
     {
-        return $this->datatables_index();
+        $actionNew = 'VideosController@create';
+        $actionEditBulk = 'VideosController@editBulk';
+        $actionDeleteBulk = 'VideosController@destroyBulk';
+        $clients = Client::orderBy('name', 'asc')->get(array('id', 'name'));
+        $tagTypes = Tagtype::all();
+
+        // we get the video objects for those IDs in the playlist (session) but it might not be ordered the same way,
+        // how it was dragged and dropped, it comes how it is ordered in the DB.
+        $playlist     = Video::InPlaylist()->get(); // returns a colletion of App\Video
+        //so we need to re order it to match the playlist
+        $order = session()->get('videos');
+        $playlist = $playlist->sort(function ($a, $b) use ($order) {
+            $pos_a = array_search($a->id, $order);
+            $pos_b = array_search($b->id, $order);
+            return $pos_a - $pos_b;
+        });
+
+        $playlist_id  = session()->get('playlist_id');
+        $playlist_obj = ($playlist_id ? Playlist::find($playlist_id) : null);
+
+        return view('videos.index', compact(
+                'actionNew',
+                'actionEditBulk',
+                'actionDeleteBulk',
+                'playlist',
+                'playlist_obj',
+                'clients',
+                'tagTypes'
+            )
+        );
     }
 
     public function create()
@@ -336,40 +365,6 @@ class VideosController extends Controller
     }
 
     /* DATATABLES */
-    private function datatables_index()
-    {
-        $actionNew = 'VideosController@create';
-        $actionEditBulk = 'VideosController@editBulk';
-        $actionDeleteBulk = 'VideosController@destroyBulk';
-        $clients = Client::orderBy('name', 'asc')->get(array('id', 'name'));
-        $tagTypes = Tagtype::all();
-
-        // we get the video objects for those IDs in the playlist (session) but it might not be ordered the same way,
-        // how it was dragged and dropped, it comes how it is ordered in the DB.
-        $playlist     = Video::InPlaylist()->get(); // returns a colletion of App\Video
-        //so we need to re order it to match the playlist
-        $order = session()->get('videos');
-        $playlist = $playlist->sort(function ($a, $b) use ($order) {
-            $pos_a = array_search($a->id, $order);
-            $pos_b = array_search($b->id, $order);
-            return $pos_a - $pos_b;
-        });
-
-        $playlist_id  = session()->get('playlist_id');
-        $playlist_obj = ($playlist_id ? Playlist::find($playlist_id) : null);
-
-        return view('videos.index', compact(
-                'actionNew',
-                'actionEditBulk',
-                'actionDeleteBulk',
-                'playlist',
-                'playlist_obj',
-                'clients',
-                'tagTypes'
-            )
-        );
-    }
-
     public function datatables_load($videoId = null)
     {
         $time_start = microtime(true);
@@ -386,11 +381,12 @@ class VideosController extends Controller
         //tagtypes
         $tagtypes = Tagtype::with('tags')->get()->keyBy('id');
         $tagtypes_arr = [];
+        //TODO mejorar con funciones de array tipo pupular un array con la concatenacion de las keys y despues usarlo de input
         foreach ($tagtypes as $tagtype) {
             //create them all so there is not a reference to null in the future
-            $tagtypes_arr["tags_" . $tagtype->name] = [];
+            $tagtypes_arr["tags_" . $tagtype->id] = [];
         }
-
+        // TODO xq use stdclass en lugar de la clase video?
         $videos = DB::table('videos')
             ->leftJoin('metatext_video', 'videos.id', '=', 'metatext_video.video_id')
             ->leftJoin('tag_video', 'videos.id', '=', 'tag_video.video_id')
@@ -470,7 +466,7 @@ class VideosController extends Controller
             $video_arr = array_merge($video_arr, $tagtypes_arr);
             if ($video->tags_ids){
                 foreach (explode(",",$video->tags_ids) as $tag) {
-                    $video_arr["tags_" . $tags->get($tag)->tagtype->name][] = array('id' => $tag, 'value' => $tags->get($tag)->value);
+                    $video_arr["tags_" . $tags->get($tag)->tagtype->id][] = array('id' => $tag, 'value' => $tags->get($tag)->value);
                 }
             }
             //client
@@ -494,7 +490,7 @@ class VideosController extends Controller
             foreach ($tt->tags as $tag) {
                 $tags_arr[$tag->value] = $tag->id;
             }
-            $options["tags_" . $tt->name . "[].id"] = $tags_arr;
+            $options["tags_" . $tt->id . "[].id"] = $tags_arr;
         }
         $time_end = microtime(true);
 
@@ -515,16 +511,18 @@ class VideosController extends Controller
         $svc = $video->getFillable();
 
         // Multiple-Value-Columns
-        $mvc = ['metatexts'];
-        $tagtypes_objs = Tagtype::all()->keyBy('name');
-        $tagtypes = Tagtype::lists('name')->toArray();
-        array_walk($tagtypes, function (&$e) {
-            $e = 'tags_' . $e;
-        });
-        $mvc = array_merge($mvc, $tagtypes);
+//        $mvc = ['metatexts'];
+        $tagtypes_objs = Tagtype::all()->keyBy('id');
+//        $tagtypes = Tagtype::lists('name')->toArray();
+//        array_walk($tagtypes, function (&$e) {
+//            $e = 'tags_' . $e;
+//        });
+//        $mvc = array_merge($mvc, $tagtypes);
 
         try {
             $allTags = [];
+            $allMetatexts = [];
+
             foreach ($attributes[$videoId] as $keyField => $valueField) {
                 //process single-value-columns (fillable)
                 if (in_array($keyField, $svc)) {
@@ -551,11 +549,10 @@ class VideosController extends Controller
                             $video->$keyField = ($valueField != '' ? $valueField : null);
                             break;
                     }
-                    continue;
                 }
-                //client
                 //TODO enviar el id y nombre x separado!!!!
-                if ($keyField == 'client'){
+                //client
+                elseif ($keyField == 'client'){
                     $client = Client::find($valueField['id']);
                     if (!$client) {
                         $client = new Client;
@@ -565,28 +562,26 @@ class VideosController extends Controller
                     $video->client_id = $client->id;
                 }
                 //process multiple-value-columns
-                if (in_array($keyField, $mvc)) { //the fields xxxx-many-count will be skiped
-                    //TODO method to get function dynamically and avoid the if?
-                    if ($keyField == 'metatexts')
-                    {
-                        //metatexts
-                        if ($attributes[$videoId]['metatexts-many-count'] != 0) {
-                            $allMetatexts = $this->createAndAppendNewMetatexts(array_column($valueField, 'id'));
-                        } else {
-                            $allMetatexts = array();
-                        }
-                        $video->metatexts()->sync($allMetatexts);
+                //TODO method to get function dynamically and avoid the if?
+                //metatexts
+                elseif ($keyField == 'metatexts-many-count') {
+                    if ($attributes[$videoId]['metatexts-many-count'] != 0)
+                        $allMetatexts = $this->createAndAppendNewMetatexts(array_column($attributes[$videoId]['metatexts'], 'id'));
+                    else
+                        $allMetatexts = array();
 
-                    } else {
-                        //tags
-                        if ($attributes[$videoId][$keyField . '-many-count'] != 0) {
-//                            Log::info('Saving: ' . $keyField . " - " . var_export($valueField, true));
-                            $i = str_replace('tags_', '', $keyField);
-                            $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$i]));
-//                            Log::info('alltags: ' . var_export($allTags, true));
-                            $video->tags()->sync($allTags);
-                        }
-                    }
+                    $video->metatexts()->sync($allMetatexts);
+                }
+                //tags
+                elseif (strpos($keyField, 'tags_') !== false && strpos($keyField, '-many-count') === false) {
+                    //TODO tags should we a polymorfic relation
+                    $tagtype_id_requested = (int)str_replace('tags_', '', $keyField);
+                    $other_types_tags = $video->tags()->get()->pluck('tagtype_id', 'id')->filter(function ($value, $key) use ($tagtype_id_requested) {
+                        return $value != $tagtype_id_requested;
+                    })->toArray();
+                    $other_types_tags = array_keys($other_types_tags);
+                    $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]), $other_types_tags);
+                    $video->tags()->sync($allTags);
                 }
             }
             $video->save();

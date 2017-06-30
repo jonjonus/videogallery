@@ -174,6 +174,10 @@ $(document).ready(function() {
 					"multiple": true,
 					"tags": true,
 					"allowClear": true,
+                    "placeholder": {
+                        "id": "",
+                        "placeholder": "Leave blank to ..."
+                    },
 					"tokenSeparators": [',', ' ']
 				}
 			}
@@ -265,18 +269,22 @@ $(document).ready(function() {
 	$.each(tagTypes, function (index,tagtype) {
 		editor.add( {
 			label: tagtype.name,
-			name: "tags_"+tagtype.name+"[].id",
+			name: "tags_"+tagtype.id+"[].id",
 			type: "select2",
 			opts: {
 				"multiple":    true,
 				"tags":        true,
 				"allowClear":  true,
+                "placeholder": {
+                    "id": "",
+                    "placeholder": "Leave blank to ..."
+                },
 				"tokenSeparators": [',', ' ']
 			}
 		});
 		columns.push({
-			data:      "tags_"+tagtype.name,
-			editField: "tags_"+tagtype.name+"[].id",
+			data:      "tags_"+tagtype.id,
+			editField: "tags_"+tagtype.id+"[].id",
 			render:    "[, ].value",
 			className: "bubble-editor",
 		});
