@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
 Route::get('/', 'VideosController@index');
-Route::get('/home', 'HomeController@index');
 
 Route::resource('clients',   'ClientsController');
 // Route::get('clients/{id}/videos','ClientsController@videos');
@@ -54,9 +53,7 @@ Route::get('youtube_index',  'YoutubeController@youtube_index');
 Route::get('youtube_update', 'YoutubeController@youtube_update');
 Route::get('youtube_clear',  'YoutubeController@youtube_clear');
 
-Route::get('vimeo_index',      'YoutubeController@vimeo_index');
-Route::get('vimeo_day_update', 'YoutubeController@vimeo_update');
-Route::get('vimeo_clear',      'YoutubeController@vimeo_clear');
+Route::match(array('GET', 'POST'),'vimeo_index', 'YoutubeController@vimeo_index');
 
 //Playlist Controller
 Route::resource('playlists',              'PlaylistsController');

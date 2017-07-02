@@ -22,11 +22,18 @@ function youtubeUpdate() {
                     var tbl_body = document.createElement("tbody");
                     var odd_even = false;
                     $.each(JSON.parse(response.list), function() {
-                        $("#videos").prepend('<li>'+this.video.position+' - '+this.video.produced_at+' - '+this.video.title.substring(0,30)+ (this.new ? ' <span style="color:blue;">New!</span>':'')+'</li>');
+                        $("#videos").prepend('<li>'+this.video.position
+                            +' - '+this.video.produced_at
+                            +' - '+this.video.title.substring(0,30)
+                            +' - '+this.video.thumbnail
+                            + (this.new ? ' <span style="color:blue;">New!</span>':'')+'</li>');
                     })
                     $("#total").html(response.total);
                     $("#page").html(response.page_num);
 					// $("#videos").prepend("<li>"+response.count+" - "+response.page+"</li>");
+                } else if (response.result == 'job') {
+                    alert('started')
+
                 } else if (response.result == 'authorize_access') {
                     window.location.href = response.status;
                 }
