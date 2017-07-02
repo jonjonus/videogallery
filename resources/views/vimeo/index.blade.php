@@ -5,7 +5,7 @@
 
     {{ Form::open(['action' => 'YoutubeController@vimeo_index']) }}
     {{ csrf_field() }}
-    {{ method_field('POSTgit') }}
+    {{ method_field('POST') }}
     @if ($job)
         Vimeo Update Job created at: {{ date('D, F j Y, h:i:s A', $job->created_at) }}
     @else
