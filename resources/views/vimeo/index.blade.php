@@ -9,7 +9,7 @@
     @if ($job)
         Vimeo Update Job created at: {{ date('D, F j Y, h:i:s A', $job->created_at) }}
     @else
-        <button type="submit" class="btn btn-primary btn-lg" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Updating...">Asyncronous Vimeo Update</button>
+        <button type="submit" class="btn btn-primary btn-lg" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Updating...">Asynchronous Vimeo Update</button>
     @endif
     {{ Form::close() }}
 <ul id="videos"></ul>
