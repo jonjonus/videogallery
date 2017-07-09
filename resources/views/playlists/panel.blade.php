@@ -11,7 +11,7 @@
 	</div>
 	<div class="panel-body" style="max-width: 100%;">
 		<div class="dragula-container dragable-video-list">
-			@foreach ($playlist as $video)
+			@foreach ($playlist_videos as $video)
 					<div id="{{ $video->id }}" class="dragable-video-item" style="max-width: 100%;">
 						<div class="ellipsis">{{ $video->title }}</div>
 						<div>
@@ -51,7 +51,7 @@
 			{{-- Details --}}
 			<a class="btn btn-success" target="_blank" href="{{ action('PlaylistsController@edit', [$playlist_obj->id]) }}" role="button">Details</a>
 
-		@elseif(count($playlist))
+		@elseif(count($playlist_videos))
 
 		<div class="btn-group-vertical" role="group" aria-label="...">
 			{{-- Open --}}

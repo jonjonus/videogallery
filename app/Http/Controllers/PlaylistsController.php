@@ -36,16 +36,16 @@ class PlaylistsController extends Controller
         return view('playlists.create', compact('videos'));
     }
 
-    public function show(Playlist $playlist)
+    public function show(Playlist $playlist_videos)
     {
-    	$videos = $playlist->videos()->get();
-        return view('playlists.show', compact('playlist', 'videos'));
+    	$videos = $playlist_videos->videos()->orderBy('order')->get();
+        return view('playlists.show', compact('playlist_videos', 'videos'));
     }
     
-    public function edit(Playlist $playlist)
+    public function edit(Playlist $playlist_videos)
     {
-        $videos = $playlist->videos()->get();
-        return view('playlists.edit', compact('playlist','videos'));
+        $videos = $playlist_videos->videos()->orderBy('order')->get();
+        return view('playlists.edit', compact('playlist_videos','videos'));
     }
 
     public function update(Playlist $playlist, EditPlaylistRequest $request)
@@ -53,16 +53,14 @@ class PlaylistsController extends Controller
         $playlist->update($request->all());
         //if video IDs are sent sync them
         if ($request->input('ids')) {
+            $playlist->videos()->sync([]);
             $playlist->videos()->sync($request->input('ids'));
-            $playlist->save(); //TODO needed?
-//            $video_ids = $playlist->videos()->pluck('videos.id')->toArray();
-//            session()->put('videos', $video_ids);
             session()->put('videos', $request->input('ids'));
         }
-
+        // TODO separate the buttons create and save
         if($request->ajax()){
-            $content = view('playlists.modal',compact('playlist','videos'))->render();
-            $panel = view('playlists.panel', ['playlist'=>$playlist->videos()->get(),'playlist_obj'=>$playlist])->render();
+            $content = view('playlists.modal',compact('playlist'))->render();
+            $panel = view('playlists.panel', ['playlist_videos'=>$playlist->videos()->orderBy('order')->get(),'playlist_obj'=>$playlist])->render();
             return response([
                 'action'       => 'update',
                 'result'       => 'playlist updated',
@@ -78,24 +76,35 @@ class PlaylistsController extends Controller
 
     public function store(CreatePlaylistRequest $request)
     {
+        $session_video_ids = session()->get('videos');
+        //TODO cada vez que llamo a Video::InPlaylist()->get() deberia estar encapsulado con en una fucnion que lo odene como corresponde segun el orden de la session
 	    $videos = Video::InPlaylist()->get();
+        // we get the video objects for those IDs in the playlist (session) but it might not be ordered the same way,
+        // how it was dragged and dropped, it comes how it is ordered in the DB.
+        //so we need to re order it to match the playlist
+        $videos = $videos->sort(function ($a, $b) use ($session_video_ids) {
+            $pos_a = array_search($a->id, $session_video_ids);
+            $pos_b = array_search($b->id, $session_video_ids);
+            return $pos_a - $pos_b;
+        });
+
 	    $playlist = Playlist::create($request->all());
         $playlist->url = "http://homestead.app/player/".$playlist->title;
         $playlist->save();
         $playlist->videos()->sync($videos);
 
         session()->put('playlist_id', $playlist->id);
-        $panel = view('playlists.panel', ['playlist'=>$videos,'playlist_obj'=>$playlist])->render();
+        $panel = view('playlists.panel', ['playlist_videos'=>$videos,'playlist_obj'=>$playlist])->render();
 
         if($request->ajax()){
             $modal = view('playlists.modal',compact('playlist'))->render();
             return response([
-                        'action'       => 'create',
-                        'result'       => 'playlist created',
-                        'playlist'     => $videos,
-                        'playlist_obj' => $playlist,
-                        'content'      => $modal,
-                        'panel'        => $panel
+                        'action'          => 'create',
+                        'result'          => 'playlist created',
+                        'playlist_videos' => $videos,
+                        'playlist_obj'    => $playlist,
+                        'content'         => $modal,
+                        'panel'           => $panel
                     ]);
         }
         return redirect(action('PlaylistsController@index'));
@@ -142,12 +151,23 @@ class PlaylistsController extends Controller
             echo json_encode( array("result" => 'The video is already in the playlist') );
             exit;
         } else {
-//            session()->push('videos.'.$video->id, 0);
             session()->push('videos',$video->id);
-            $playlist = Video::InPlaylist()->get();
+            $videos[] = $video->id; //also need to add it to this array as it was already loaded from the session before
+
+            $playlist_videos = Video::InPlaylist()->get();
             $playlist_id  = session()->get('playlist_id');
-            $playlist_obj = ($playlist_id ? Playlist::find($playlist_id) : null);
-            $panel = view('playlists.panel', compact('playlist','playlist_obj'))->render();
+            $playlist_obj = ($playlist_id ? Playlist::find($playlist_id) : null); //TODO find no devuelve nul anyway?
+
+            // we get the video objects for those IDs in the playlist (session) but it might not be ordered the same way,
+            // how it was dragged and dropped, it comes how it is ordered in the DB.
+            //so we need to re order it to match the playlist
+            $playlist_videos = $playlist_videos->sort(function ($a, $b) use ($videos) {
+                $pos_a = array_search($a->id, $videos);
+                $pos_b = array_search($b->id, $videos);
+                return $pos_a - $pos_b;
+            });
+
+            $panel = view('playlists.panel', compact('playlist_videos','playlist_obj'))->render();
             return response(array('action' => 'add', 'result' => 'Video added', 'panel' => $panel)); //($content = '', $status = 200, array $headers = [])
         }
         // return redirect(action('VideosController@index'));       
@@ -170,9 +190,9 @@ class PlaylistsController extends Controller
 //            session(['videos' => $videos]);
             session()->put('videos', $videos);
             //get the videos in the the current playlist
-            $playlist     = Video::InPlaylist()->get();
+            $playlist_videos     = Video::InPlaylist()->get();
             $playlist_obj = ($playlist_id ? Playlist::find($playlist_id) : null);
-            $panelHtml    = view('playlists.panel', compact('playlist','playlist_obj'))->render();
+            $panelHtml    = view('playlists.panel', compact('playlist_videos','playlist_obj'))->render();
             return response(array('action' => 'remove', 'result' => 'Video removed', 'panel' => $panelHtml)); //($content = '', $status = 200, array $headers = [])
         }
     }
@@ -187,9 +207,9 @@ class PlaylistsController extends Controller
         } else {
 	    	session()->forget('videos');
 	    	session()->forget('playlist_id');
-            $playlist = array();
+            $playlist_videos = array();
             $playlist_obj = null;
-            $panel = view('playlists.panel', compact('playlist','playlist_obj'))->render();
+            $panel = view('playlists.panel', compact('playlist_videos','playlist_obj'))->render();
             return response(array('action' => 'removeall', 'result' => 'All videos removed', 'panel' => $panel)); //($content = '', $status = 200, array
         }
     }

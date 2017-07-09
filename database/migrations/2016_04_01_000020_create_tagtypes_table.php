@@ -18,6 +18,15 @@ class CreateTagtypesTable extends Migration
 
             $table->timestamps();
         });
+
+        DB::table('users')->insert(['name' => 'Confidentiality']);
+        DB::table('users')->insert(['name' => 'Price']);
+        DB::table('users')->insert(['name' => 'Product']);
+        DB::table('users')->insert(['name' => 'Objective']);
+        DB::table('users')->insert(['name' => 'Industry']);
+        DB::table('users')->insert(['name' => 'Award']);
+        DB::table('users')->insert(['name' => 'Location']);
+
     }
 
     /**

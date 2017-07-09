@@ -8,6 +8,7 @@
 // TODO 5. cambiar $cipher = 'AES-128-CBC' x 256
 // TODO 6. xq los checkboxes submitean todo el row?
 // TODO 7. cuando cargas una lista si la que esta no fue modificada no deberia preguntarte si queres perder los cambios
+// TODO 8. deal with the expired sessions (http and ajax)
 
 
 

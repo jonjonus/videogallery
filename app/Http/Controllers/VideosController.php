@@ -39,10 +39,10 @@ class VideosController extends Controller
 
         // we get the video objects for those IDs in the playlist (session) but it might not be ordered the same way,
         // how it was dragged and dropped, it comes how it is ordered in the DB.
-        $playlist     = Video::InPlaylist()->get(); // returns a colletion of App\Video
+        $playlist_videos = Video::InPlaylist()->get(); // returns a colletion of App\Video
         //so we need to re order it to match the playlist
         $order = session()->get('videos');
-        $playlist = $playlist->sort(function ($a, $b) use ($order) {
+        $playlist_videos = $playlist_videos->sort(function ($a, $b) use ($order) {
             $pos_a = array_search($a->id, $order);
             $pos_b = array_search($b->id, $order);
             return $pos_a - $pos_b;
@@ -55,7 +55,7 @@ class VideosController extends Controller
                 'actionNew',
                 'actionEditBulk',
                 'actionDeleteBulk',
-                'playlist',
+                'playlist_videos',
                 'playlist_obj',
                 'clients',
                 'tagTypes'
