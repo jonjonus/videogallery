@@ -21,7 +21,7 @@
             <div class="list-group">
                 @foreach ($playlist->videos()->get() as $video)
                     <a href="#"
-                       class="list-group-item vimeo-load"
+                       class="list-group-item"
                        id="{{ $video->id }}"
                        data-cloudid = "{{ $video->cloud_id }}"
                        data-service = "{{ $video->service->name }}"
@@ -39,5 +39,5 @@
 @endsection
 
 @section('scripts')
-    <script src="/js/vimeo.js"></script>
+    <script src="/js/player_vimeo.js"></script>
 @endsection
