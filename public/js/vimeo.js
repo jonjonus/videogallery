@@ -12,7 +12,7 @@ function youtubeUpdate() {
     button.button('loading');
 
     $.ajax({
-        method: "POST"
+        method: "GET"
         ,url: url
         ,data: { _token: CSRF_TOKEN, _method: METHOD }
     })
