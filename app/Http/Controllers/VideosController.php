@@ -579,10 +579,10 @@ class VideosController extends Controller
 
                     if ($keyField != 'tags_'.$tagtype_id_requested.'-many-count') {
                         $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]));
-                        $video->tags()->sync($allTags);
                     }
                 }
             }
+            $video->tags()->sync($allTags);
             $video->save();
         } catch (\Exception $e) {
             header('HTTP/1.1 500 (' . $e->getCode() . ') ' . $e->getMessage());
