@@ -39,5 +39,5 @@
 @endsection
 
 @section('scripts')
-    <script src="/js/player_vimeo.js"></script>
+    <script src="/js/vimeo.js"></script>
 @endsection
