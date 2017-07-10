@@ -29,8 +29,7 @@ class PlayerController extends Controller
         $playlist = Playlist::where('title', urldecode($title))->first();
 
         // Authenticate
-        //$alert = ($playlist->protected && Auth::check());
-        $alert = 'hola esta es una alerta!!!';
+        $alert = ($playlist->protected && Auth::check());
 
         if ($playlist->protected && Auth::guest()) {
             $action = ['PlayerController@player_by_title',$title];
@@ -40,6 +39,5 @@ class PlayerController extends Controller
             return view('player.login', compact('playlist','action','alert'))->withErrors(['Invalid password']);
         }
         return view('player.index_vimeo', compact('playlist','alert') );
-//        return view('player.index', compact('playlist','alert') );
     }
 }

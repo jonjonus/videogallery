@@ -38,14 +38,14 @@ class PlaylistsController extends Controller
 
     public function show(Playlist $playlist_videos)
     {
-    	$videos = $playlist_videos->videos()->orderBy('order')->get();
+    	$videos = $playlist_videos->videos()->get();
         return view('playlists.show', compact('playlist_videos', 'videos'));
     }
     
-    public function edit(Playlist $playlist_videos)
+    public function edit(Playlist $playlist)
     {
-        $videos = $playlist_videos->videos()->orderBy('order')->get();
-        return view('playlists.edit', compact('playlist_videos','videos'));
+        $videos = $playlist->videos()->get();
+        return view('playlists.edit', compact('playlist','videos'));
     }
 
     public function update(Playlist $playlist, EditPlaylistRequest $request)
@@ -60,7 +60,7 @@ class PlaylistsController extends Controller
         // TODO separate the buttons create and save
         if($request->ajax()){
             $content = view('playlists.modal',compact('playlist'))->render();
-            $panel = view('playlists.panel', ['playlist_videos'=>$playlist->videos()->orderBy('order')->get(),'playlist_obj'=>$playlist])->render();
+            $panel = view('playlists.panel', ['playlist_videos'=>$playlist->videos()->get(),'playlist_obj'=>$playlist])->render();
             return response([
                 'action'       => 'update',
                 'result'       => 'playlist updated',
