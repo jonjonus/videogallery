@@ -21,7 +21,7 @@
             <div class="list-group">
                 @foreach ($playlist->videos()->get() as $video)
                     <a href="#"
-                       class="list-group-item"
+                       class="list-group-item vimeo-load"
                        id="{{ $video->id }}"
                        data-cloudid = "{{ $video->cloud_id }}"
                        data-service = "{{ $video->service->name }}"
