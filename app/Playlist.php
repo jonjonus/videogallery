@@ -31,7 +31,7 @@ class Playlist extends Model
  	 */
     public function videos()
     {
-        return $this->belongsToMany('App\Video')->withPivot('order')->withTimeStamps();
+        return $this->belongsToMany('App\Video')->withTimeStamps();
     }
 
 }
