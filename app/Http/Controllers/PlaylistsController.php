@@ -128,7 +128,7 @@ class PlaylistsController extends Controller
                 'message' => $message,
                 'options' => array(
                     "<a class='btn btn-sm btn-info' href='{{ $href }}' role='button'>Cancel</a>",
-                    view('Playlists.form-load-confirm',['playlist_id' => $playlist->id])->render()
+                    view('playlists.form-load-confirm',['playlist_id' => $playlist->id])->render()
                 )
             ));
         }
