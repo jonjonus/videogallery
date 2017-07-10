@@ -573,15 +573,14 @@ class VideosController extends Controller
                     $video->metatexts()->sync($allMetatexts);
                 }
                 //tags
-                elseif (strpos($keyField, 'tags_') !== false && strpos($keyField, '-many-count') === false) {
+                elseif (strpos($keyField, 'tags_') !== false) {
                     //TODO tags should we a polymorfic relation
                     $tagtype_id_requested = (int)str_replace('tags_', '', $keyField);
-                    $other_types_tags = $video->tags()->get()->pluck('tagtype_id', 'id')->filter(function ($value, $key) use ($tagtype_id_requested) {
-                        return $value != $tagtype_id_requested;
-                    })->toArray();
-                    $other_types_tags = array_keys($other_types_tags);
-                    $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]), $other_types_tags);
-                    $video->tags()->sync($allTags);
+
+                    if ($keyField != 'tags_'.$tagtype_id_requested.'-many-count') {
+                        $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]));
+                        $video->tags()->sync($allTags);
+                    }
                 }
             }
             $video->save();

@@ -44,25 +44,17 @@ $(document).ready(function() {
         if ( $(this).hasClass("bubble-editor") ) {
             editor.bubble( this, {
                 title: 'Enter values',
-                submit: 'changed',
+                submit: 'all',
                 submitOnBlur: true
             });
         } else {
             editor.inline( this, {
-                submit: 'changed',
+                submit: 'all',
                 submitOnBlur: true
             });
         }
     } );
 
-
-    //bind function to select rows
-	//Handle multiple selection
-	// $('table#datatable > tbody').on( 'click', ".select-checkbox", function () {
-	// 	var id = datatable.cell( this ).data().id;
-	// 	add_row_to_selection(id);
-	// 	console.log( id );
-	// });
 
 	$(".dragable-video-list").on("click", ".myThumbnail", function () {
 		var id = $(this).parent().data('id');
@@ -70,6 +62,98 @@ $(document).ready(function() {
 	});
 
 	//create datatable editor
+	var editor_tag_columns = [];
+    $.each(tagTypes, function (index,tagtype) {
+        editor_tag_columns.push( {
+            label: tagtype.name,
+            name: "tags_"+tagtype.id+"[].id",
+            type: "select2",
+            opts: {
+                "multiple":    true,
+                "tags":        true,
+                "allowClear":  true,
+                "placeholder": {
+                    "id": "",
+                    "placeholder": "Leave blank to ..."
+                },
+                "tokenSeparators": [',', ' ']
+            }
+        });
+    });
+
+    var editor_columns = [
+        {
+            label: "Thumbnail",
+            name: "thumbnail"
+        },
+        {
+            label: "Title",
+            name: "title"
+        },
+        {
+            label: "Dur",
+            name: "duration"
+        },
+        {
+            label: "Description",
+            name: "description"
+        },
+        {
+            label: "Produced",
+            name: "produced_at",
+        },
+        {
+            label: "Client",
+            name: "client.id",
+            type: "select2",
+            opts: {
+                "multiple": false,
+                "tags": true,
+                "allowClear" : false,
+            },
+            placeholderDisabled: false,
+            placeholder: "Select...",
+            placeholderValue: null,
+        },
+        {
+            label: "name",
+            name: "name"
+        },
+        {
+            type: "checkbox",
+            label: "New",
+            name: "new",
+            separator: "|",
+            ipOpts:    [
+                { label: '', value: 1 }
+            ]
+        },
+        {
+            type: "checkbox",
+            label: "Ignore",
+            name: "ignore",
+            separator: "|",
+            ipOpts:    [
+                { label: '', value: 1 }
+            ]
+        },
+        {
+            label: "Meta",
+            name: "metatexts[].id",
+            type: "select2",
+            opts: {
+                "multiple": true,
+                "tags": true,
+                "allowClear": true,
+                "placeholder": {
+                    "id": "",
+                    "placeholder": "Leave blank to ..."
+                },
+                "tokenSeparators": [',', ' ']
+            }
+        }
+    ];
+
 	editor = new $.fn.dataTable.Editor( {
 		// ajax: "/datatables_update",
 		table: "#datatable",
@@ -97,91 +181,12 @@ $(document).ready(function() {
         },*/
         ajax: '/datatables_update',
 		idSrc: "id",
-		fields: [
-			{
-				label: "Thumbnail",
-				name: "thumbnail"
-			},
-			{
-				label: "Title",
-				name: "title"
-			},
-            {
-                label: "Dur",
-                name: "duration"
-            },
-			{
-				label: "Description",
-				name: "description"
-			},
-			{
-				label: "Produced",
-				name: "produced_at",
-				// type: "date",
-				// opts: {
-				// 	showOn: 'focus',
-                 //    format: "mm/yyyy",
-                 //    startView: 1,
-                 //    minViewMode: 1,
-                 //    maxViewMode: 2
-				// },
-				// attrs: {
-                //
-                // }
-
-			},
-			{
-				label: "Client",
-				name: "client.id",
-				type: "select2",
-				opts: {
-					"multiple": false,
-					"tags": true,
-					"allowClear" : false,
-					//"tokenSeparators": [',', ' ']
-				},
-				placeholderDisabled: false,
-				placeholder: "Select...",
-				placeholderValue: null,
-			},
-			{
-				label: "name",
-				name: "name"
-			},
-			{
-				type: "checkbox",
-				label: "New",
-				name: "new",
-				separator: "|",
-				ipOpts:    [
-					{ label: '', value: 1 }
-				]
-			},
-			{
-				type: "checkbox",
-				label: "Ignore",
-				name: "ignore",
-				separator: "|",
-				ipOpts:    [
-					{ label: '', value: 1 }
-				]
-			},
-			{
-				label: "Meta",
-				name: "metatexts[].id",
-				type: "select2",
-				opts: {
-					"multiple": true,
-					"tags": true,
-					"allowClear": true,
-                    "placeholder": {
-                        "id": "",
-                        "placeholder": "Leave blank to ..."
-                    },
-					"tokenSeparators": [',', ' ']
-				}
-			}
-		]
+		fields: editor_columns.concat(editor_tag_columns),
+        formOptions: {
+            main: {
+                submit: 'all'
+            }
+        }
 	});
 
 	editor.on( 'submitSuccess', function ( e, json, data ) {
@@ -267,21 +272,6 @@ $(document).ready(function() {
 	];
 
 	$.each(tagTypes, function (index,tagtype) {
-		editor.add( {
-			label: tagtype.name,
-			name: "tags_"+tagtype.id+"[].id",
-			type: "select2",
-			opts: {
-				"multiple":    true,
-				"tags":        true,
-				"allowClear":  true,
-                "placeholder": {
-                    "id": "",
-                    "placeholder": "Leave blank to ..."
-                },
-				"tokenSeparators": [',', ' ']
-			}
-		});
 		columns.push({
 			data:      "tags_"+tagtype.id,
 			editField: "tags_"+tagtype.id+"[].id",
