@@ -52,7 +52,7 @@ class VimeoUpdate extends Job implements ShouldQueue
 
             //first page
             $this->response   = Vimeo::request('/me/videos', $this->options, 'GET');
-            if (!isset($this->response['body']['total'] || empty($this->response['body']['total']))){
+            if (!isset($this->response['body']['total']) || empty($this->response['body']['total'])){
                 echo ('BAD RESPONSE: '.var_export($this->response,true));
                 Log::error('Bad Response');
                 return;
