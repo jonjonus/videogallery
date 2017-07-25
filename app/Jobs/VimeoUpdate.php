@@ -52,6 +52,7 @@ class VimeoUpdate extends Job implements ShouldQueue
 
             //first page
             $this->response   = Vimeo::request('/me/videos', $this->options, 'GET');
+            echo ('RESPONSE: '.var_export($this->response,true));
             $count_total      = $this->response['body']['total'];
             $next_page        = $this->response['body']['paging']['next'];
 
