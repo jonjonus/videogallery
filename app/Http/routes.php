@@ -54,6 +54,8 @@ Route::get('youtube_update', 'YoutubeController@youtube_update');
 Route::get('youtube_clear',  'YoutubeController@youtube_clear');
 
 Route::match(array('GET', 'POST'),'vimeo_index', 'YoutubeController@vimeo_index');
+Route::post('vimeo_create_job', 'YoutubeController@vimeo_create_job');
+Route::get('vimeo_in_progress', 'YoutubeController@vimeo_in_progress');
 
 //Playlist Controller
 Route::resource('playlists',              'PlaylistsController');
@@ -67,6 +69,7 @@ Route::delete('playlist_remove/{videos}', 'PlaylistsController@remove');
 /* Player */
 Route::get('player/id/{playlist}', 'PlayerController@player_by_id');
 Route::get('player/{title}', 'PlayerController@player_by_title');
+Route::get('playernew/{title}', 'PlayerController@player_by_title_new');
 
 /* DataTables and Editor */
 Route::get('datatables_load', 'VideosController@datatables_load');

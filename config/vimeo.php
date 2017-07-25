@@ -38,9 +38,9 @@ return [
     'connections' => [
 
         'main' => [
-            'client_id' => 'd35a68622e07526a85789e2a867859cfdf5f3029',
-            'client_secret' => '7rP0aNwz9BIn/hjGXGNsDBZM/ujNBqlwv04aD9TGh/wcwKAGmecFZxInvJpipCMHWGJDdXkQR+VqYuQeMycfbFcpySgmR+1Kgb3c600kjS8pLB9/QtcOmGacJphFWSfJ',
-            'access_token' => 'a115d6301fbfc9653536c71cfbd491b4',
+            'client_id' => env('VIMEO_CLIENT_ID'),
+            'client_secret' => env('VIMEO_CLIENT_SECRET'),
+            'access_token' => env('VIMEO_ACCESS_TOKEN'),
         ],
 
         'alternative' => [

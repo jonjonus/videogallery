@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "laravelcollective/html": "5.2.*",
         "google/apiclient": "^2.0",
-        "vinkla/vimeo": "^3.4"
+        "vinkla/vimeo": "^3.4",
+        "twbs/bootstrap": "^3.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

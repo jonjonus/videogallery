@@ -24,6 +24,23 @@ class PlayerController extends Controller
         return view('player.index_vimeo', compact('playlist') );
     }
 
+    public function player_by_title_new($title, Request $request)
+    {
+        $playlist = Playlist::where('title', urldecode($title))->first();
+
+        // Authenticate
+        $alert = ($playlist->protected && Auth::check());
+
+        if ($playlist->protected && Auth::guest()) {
+            $action = ['PlayerController@player_by_title',$title];
+            if (empty($request->input('password')))
+                return view('player.login', compact('playlist','action','alert') );
+        elseif ($request->input('password') != $playlist->password)
+            return view('player.login', compact('playlist','action','alert'))->withErrors(['Invalid password']);
+        }
+        return view('player.vimeo.index', compact('playlist','alert') );
+    }
+
     public function player_by_title($title, Request $request)
     {
         $playlist = Playlist::where('title', urldecode($title))->first();

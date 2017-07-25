@@ -244,7 +244,9 @@ $(document).ready(function() {
 			render: "name",
 			className: "bubble-editor",
 		},
-		{ 	data: "name" },
+		{ 	data: "name",
+            className: "no-editor",
+        },
 		{ 	data: "new",
 			render: function ( data, type, row ) {
 				if ( type === 'display' ) {

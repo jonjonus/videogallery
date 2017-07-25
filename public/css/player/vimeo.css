@@ -1,0 +1,11 @@
+.row {
+    height: 100%;
+}
+
+.list-group-item {
+    display:block;
+    overflow:auto;
+}
+.player {
+    display: flex;
+}

@@ -1,19 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-
-
-    {{ Form::open(['action' => 'YoutubeController@vimeo_index']) }}
+    {{ Form::open(['action' => 'YoutubeController@vimeo_create_job']) }}
     {{ csrf_field() }}
     {{ method_field('POST') }}
-    @if ($job)
-        Vimeo Update Job created at: {{ date('D, F j Y, h:i:s A', $job->created_at) }}
-    @else
-        <button type="submit" class="btn btn-primary btn-lg" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Updating...">Asynchronous Vimeo Update</button>
-    @endif
+    <button type="submit" class="btn btn-primary btn-lg" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Updating...">Asynchronous Vimeo Update</button>
     {{ Form::close() }}
-<ul id="videos"></ul>
-<table id="response"></table>
 @endsection
 
 {{--@section('scripts')--}}
