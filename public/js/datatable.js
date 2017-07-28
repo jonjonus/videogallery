@@ -333,6 +333,12 @@ $(document).ready(function() {
 		buttons: [
 			'selectAll',
 			'selectNone',
+            {
+                text: "Select visible",
+                action: function ( e, dt ) {
+                    dt.rows( { page: 'current' } ).select();
+                }
+            },
 			{extend: 'selectedSingle',
 				text: 'Edit',
 				action: function ( e, dt, button, config ) {
