@@ -24,6 +24,6 @@
         $("#playlist-modal iframe").attr("src", $("#playlist-modal iframe").attr("src"));
     });
     $('#playlist-modal').on('show.bs.modal', function () {
-        $('.modal-content').css('height', $(window).height()*0.8);
+        $('.modal-body').css('height', $(window).height()*0.8);
     });
 </script>
