@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="playlist-modal" tabindex="-1" role="dialog" aria-labelledby="playlist-modalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -22,5 +22,8 @@
         $('.modal-dialog').removeClass('modal-lg');
         $('.modal-dialog').removeClass('modal-sm');
         $("#playlist-modal iframe").attr("src", $("#playlist-modal iframe").attr("src"));
+    });
+    $('#playlist-modal').on('show.bs.modal', function () {
+        $('.modal-content').css('height', $(window).height()*0.8);
     });
 </script>

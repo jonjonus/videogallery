@@ -195,8 +195,8 @@ class VideosController extends Controller
         } elseif ($video->embed) {
 
             $iframe = preg_replace("/width=\"[0-9]*\"/", 'width="100%"', $video->embed);
-            $iframe = preg_replace("/height=\"[0-9]*\"/", 'height="auto"', $iframe);
-
+            $iframe = preg_replace("/height=\"[0-9]*\"/", 'height="100%"', $iframe);
+//                $iframe = $video->embed;
             return response()->json(array(
                 'result' => 'ok',
                 'embed' => $iframe,

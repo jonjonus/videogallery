@@ -300,6 +300,8 @@ $(document).ready(function() {
         deferRender: true,
 		order: [[column_ordering_start, 'asc']],
 		orderCellsTop: true,
+        stateSave: true,
+        stateDuration: 0,
 		select: {
 			style:    'multi',
 			selector: 'td:first-child'
