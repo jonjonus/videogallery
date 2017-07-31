@@ -7,8 +7,6 @@
         </div>
     </div>
 
-
-
     @if (isset($moreButtons))
         @include($moreButtons)
     @endif

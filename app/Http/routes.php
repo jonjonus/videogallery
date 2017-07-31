@@ -23,6 +23,8 @@ Route::get('videos_delete_bulk',                'VideosController@destroyBulk');
 Route::post('videos_update_bulk',               'VideosController@updateBulk');
 Route::post('videos_update_field/{videos}',		'VideosController@updateField');
 Route::get('videos/{videos}/embed',             'VideosController@embedCode');
+Route::get('videos/{videos}/fullscreen',        'VideosController@fullScreen');
+
 
 Route::Controllers([
     'auth' => 'Auth\AuthController',

@@ -196,7 +196,6 @@ class VideosController extends Controller
 
             $iframe = preg_replace("/width=\"[0-9]*\"/", 'width="100%"', $video->embed);
             $iframe = preg_replace("/height=\"[0-9]*\"/", 'height="100%"', $iframe);
-//                $iframe = $video->embed;
             return response()->json(array(
                 'result' => 'ok',
                 'embed' => $iframe,
@@ -208,6 +207,13 @@ class VideosController extends Controller
             'embed'  => '',
             'title'  => $video->title,
             'errors' => 'Sorry, video not available'));
+    }
+
+    public function fullScreen(Video $video)
+    {
+        $iframe = preg_replace("/width=\"[0-9]*\"/", 'width="100%"', $video->embed);
+        $iframe = preg_replace("/height=\"[0-9]*\"/", 'height="100%"', $iframe);
+        return view('videos.fullscreen', compact('iframe'));
     }
 
     /* SELECTION */

@@ -214,7 +214,8 @@ $(document).ready(function() {
 		{
 			data: "thumbnail",
 			render: function ( data, type, row ) {
-				return '<img src="" data-source="'+data+'" class="myThumbnail" width="50px" height="38px"/>';
+				return '<img src="" data-source="'+data+'" class="myThumbnail" width="50px" height="38px"/> ' +
+                    '<a href="videos/'+row.id+'/fullscreen" target="_blank"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> ';
 			},
 			orderable: false,
 			className: "no-editor"
