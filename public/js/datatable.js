@@ -342,6 +342,12 @@ $(document).ready(function() {
                     dt.rows( { page: 'current' } ).select();
                 }
             },
+            {
+                text: "Select filtered",
+                action: function ( e, dt ) {
+                    dt.rows( {order:'index', search:'applied'} ).select();
+                }
+            },
 			{extend: 'selectedSingle',
 				text: 'Edit',
 				action: function ( e, dt, button, config ) {
@@ -466,9 +472,15 @@ $(document).ready(function() {
     //keep count of selected rows
     datatable.on( 'select', function ( e, dt, type, indexes ) {
         countVideos(dt, type);
+        updateSelection(dt, type);
+        console.dir(e);
+
+
     } );
     datatable.on( 'deselect', function ( e, dt, type, indexes ) {
         countVideos(dt, type);
+        updateSelection(dt, type);
+        console.dir(e);
     } );
 
     //load images when changing pages instead of table init
@@ -510,19 +522,56 @@ $(document).ready(function() {
 
 });
 
-function add_row_to_selection(id) {
-	$.ajax({
-		method: "POST"
-		,url: '/videos/'+id+'/selection_one'
-		,data: { _token: CSRF_TOKEN, _method: 'PUT' }
-	})
-		.done(function( response ) {
-			console.log( response.result );
-		})
-		.fail(function( jqXHR, textStatus, errorThrown ) {
-			alert("There was an error adding the video to the selection.")
-			console.log( errorThrown );
-		});
+function updateSelection(dt, type) {
+    //ajax send selection
+    var ids = $.map(dt.rows({ selected: true }).data(), function (item) {
+        return item['id']
+    });
+
+    if (ids.length == 0) {
+        $.ajax({
+            method: "GET"
+            ,url: '/videos_selection_all_remove'
+        })
+            .done(function( response ) {
+                console.log( response.result );
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+                // dt.table().off('deselect');
+                // dt.deselect();
+                swal("Oops...Something went wrong selecting none! please try again", errorThrown, "error");
+
+                // datatable.on( 'deselect', function ( e, dt, type, indexes ) {
+                //     countVideos(dt, type);
+                //     updateSelection(dt, type);
+                //     console.dir(e);
+                // } );
+                return false;
+
+            });
+    } else {
+        $.ajax({
+            method: "POST"
+            ,url: '/videos_selection'
+            ,data: { _token: CSRF_TOKEN, _method: 'PUT', ids: ids }
+        })
+            .done(function( response ) {
+                console.log( response.result );
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+                // dt.table().off('deselect');
+                // dt.deselect();
+                swal("Oops...Something went wrong selecting the rows! please try again", errorThrown, "error");
+
+                // datatable.on( 'deselect', function ( e, dt, type, indexes ) {
+                //     countVideos(dt, type);
+                //     updateSelection(dt, type);
+                //     console.dir(e);
+                // } );
+                return false;
+
+            });
+    }
 }
 
 function  fncEditBulk(ids) {

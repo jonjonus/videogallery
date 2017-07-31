@@ -308,7 +308,7 @@ class VideosController extends Controller
     public function selection_all_remove(Request $request)
     {
         $request->session()->forget('videosSelected');
-        // dd($request->session()->all());
+        return response(['result' => 'ok']);
     }
 
     public function showPanel()

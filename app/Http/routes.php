@@ -13,6 +13,7 @@ Route::resource('tagtypes',        'TagtypesController');
 Route::resource('tags',            'TagsController');
 Route::resource('videos',          'VideosController');
 
+Route::get('videos_selection_all_remove', 'VideosController@selection_all_remove');
 Route::put('videos/{videos}/selection_one',	   	'VideosController@selection_add');
 Route::delete('videos/{videos}/selection_one',  'VideosController@selection_remove');
 Route::put('videos_selection',				'VideosController@selection_update');
