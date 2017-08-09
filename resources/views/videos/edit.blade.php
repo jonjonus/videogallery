@@ -46,5 +46,5 @@
 @section(('stylesheets'))
 	<link rel='stylesheet' type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
 	<link rel='stylesheet' type='text/css' href="/DataTables/Select2-4.0.1/css/select2.min.css">
-	<link rel='stylesheet' type='text/css' href="/Datatables/Bootstrap-3.3.7/css/bootstrap.min.css">
+	<link rel='stylesheet' type='text/css' href="/DataTables/Bootstrap-3.3.7/css/bootstrap.min.css">
 @endsection
