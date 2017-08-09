@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
     <div class="row" id="row-playlist">
         <div class="col-xs-10">
             @yield('index-content')

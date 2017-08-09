@@ -38,6 +38,7 @@ $(document).ready(function() {
 
     //bind delete function
     $("#datatable").on("submit",".form-video-delete", deleteVideo);
+
     // Activate an inline edit on click of a table cell
     $('#datatable').on( 'click', 'tbody td:not(:first-child, .no-editor)', function (e) {
         console.log("Column Index: "+$(this).index());
@@ -55,6 +56,10 @@ $(document).ready(function() {
         }
     } );
 
+    $('#myTabs a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
 
 	$(".dragable-video-list").on("click", ".myThumbnail", function () {
 		var id = $(this).parent().data('id');
@@ -157,6 +162,7 @@ $(document).ready(function() {
 	editor = new $.fn.dataTable.Editor( {
 		// ajax: "/datatables_update",
 		table: "#datatable",
+        template: '#customForm',
         /*ajax: function ( method, url, data, success, error ) {
             // var modifier = editor.modifier();
             // if ( modifier ) {
@@ -205,73 +211,37 @@ $(document).ready(function() {
 
 	//PREPARE COLUMNS FOR DATATABLE
 	var columns = [
-		{
-			data: null,
-			defaultContent: '',
-			className: 'select-checkbox',
-			orderable: false,
-		},
-		{
-			data: "thumbnail",
+		{ data: null, defaultContent: '', className: 'select-checkbox', orderable: false, },
+		{ data: "thumbnail", orderable: false, className: "no-editor",
 			render: function ( data, type, row ) {
 				return '<img src="" data-source="'+data+'" class="myThumbnail" width="50px" height="38px"/> ' +
                     '<a href="videos/'+row.id+'/fullscreen" target="_blank"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a> ';
-			},
-			orderable: false,
-			className: "no-editor"
-		},
-        {
-            data: "actions",
-            // render: function ( data, type, row ) {
-            //     return row['actions'];
-            // },
-            orderable: false,
-            className: "no-editor",
-        },
-		{   data: "title" },
-		{   data: "duration" },
-		{
-			data: "description",
+			}, },
+        { data: "actions", orderable: false, className: "no-editor", },
+		{ data: "title" },
+		{ data: "duration", className: "no-editor", },
+		{ data: "description",
 			render: function ( data, type, row ) {
 				return "<div class='ellipsis'>" + data + "</div>";
-			}
-		},
-		{   data: "produced_at",
-            // className: "bubble-editor datepicker"
-        },
-		{
-			data: "client",
-			editField: "client.id",
-			render: "name",
-			className: "bubble-editor",
-		},
-		{ 	data: "name",
-            className: "no-editor",
-        },
-		{ 	data: "new",
+			},},
+		{ data: "produced_at", },
+		{ data: "client", className: "bubble-editor", editField: "client.id", render: "name", },
+		{ data: "name", className: "no-editor", },
+		{ data: "new", className: "no-editor dt-body-center",
 			render: function ( data, type, row ) {
 				if ( type === 'display' ) {
 					return '<input type="checkbox" class="editor-new">';
 				}
 				return data;
-			},
-			className: "no-editor dt-body-center",
-		},
-		{ 	data: "ignore",
+			},},
+		{ data: "ignore", className: "no-editor dt-body-center",
 			render: function ( data, type, row ) {
 				if ( type === 'display' ) {
 					return '<input type="checkbox" class="editor-ignore">';
 				}
 				return data;
-			},
-			className: "no-editor dt-body-center",
-		},
-		{
-			data: "metatexts",
-			editField: "metatexts[].id",
-			render: "[, ].name",
-			className: "bubble-editor",
-		}
+			},},
+		{ data: "metatexts", editField: "metatexts[].id", render: "[, ].name", className: "bubble-editor", }
 	];
 
 	$.each(tagTypes, function (index,tagtype) {
@@ -309,6 +279,7 @@ $(document).ready(function() {
 		},
 		columns: columns,
         scrollX: true,
+        scrollY: '50vh',
         fixedColumns: {
             leftColumns: fix_columns
         },
@@ -339,49 +310,27 @@ $(document).ready(function() {
             {
                 text: "Select visible",
                 action: function ( e, dt ) {
+                    dt.rows().deselect();
                     dt.rows( { page: 'current' } ).select();
                 }
             },
             {
                 text: "Select filtered",
                 action: function ( e, dt ) {
+                    dt.rows().deselect();
                     dt.rows( {order:'index', search:'applied'} ).select();
                 }
             },
-			{extend: 'selectedSingle',
-				text: 'Edit',
-				action: function ( e, dt, button, config ) {
-					// console.log( dt.row( { selected: true } ).data() );
-					window.location.href = "/videos/" + dt.row( { selected: true } ).data()['id'] + "/edit";
-				}
-			},
-			{
-				extend: 'selected',
-				text: 'Bulk Edit',
-                className: 'excelButton',
-				action: function ( e, dt, button, config ) {
-					// iterate row to get the IDs
-                    var ids = $.map(dt.rows({ selected: true }).data(), function (item) {
-                        return item['id']
-                    });
-                    // var ids = dt.rows({ selected: true }).data().pluck('id');
-                    fncEditBulk(ids);
-				}
-			},
-			{
+            { extend: "edit",   editor: editor },
+            {
 				text: 'New',
 				action: function ( e, dt, node, config ) {
 					window.location.href = "/videos/create/"
 				}
 			},
-			{
-				extend: 'colvis',
-				postfixButtons: [ 'colvisRestore' ]
+			{ extend: 'colvis', postfixButtons: [ 'colvisRestore' ]
 			},
-            {
-                extend: 'collection',
-                text: 'New',
-                autoClose: true,
+            { extend: 'collection', text: 'Show New', autoClose: true,
                 buttons: [
                     {
                         text: 'New',
@@ -404,9 +353,7 @@ $(document).ready(function() {
                 ]
             },
             {
-                extend: 'collection',
-                text: 'Ignored',
-                autoClose: true,
+                extend: 'collection', text: 'Show Ignored', autoClose: true,
                 buttons: [
                     {
                         text: 'Ignored',
@@ -429,29 +376,53 @@ $(document).ready(function() {
                 ]
             },
             {
-                extend: 'collection',
-                text: 'Selected',
-                autoClose: true,
+                extend: 'collection', text: 'Show Selected', autoClose: true,
                 buttons: [
                     {
                         text: 'Selected',
                         action: function ( e, dt, node, config ) {
-                            dt.column( pos_ignore_column ).search(1).draw();
+                            $.fn.dataTable.ext.search.push(
+                                function (settings, data, dataIndex){
+                                    return ($(datatable.row(dataIndex).node()).hasClass('selected')) ? true : false;
+                                }
+                            );
+
+                            datatable.draw();
+
+                            $.fn.dataTable.ext.search.pop();
                         }
                     },
-                    {
-                        text: 'Not Selected',
-                        action: function ( e, dt, node, config ) {
-                            dt.column( pos_ignore_column ).search(0).draw();
-                        }
-                    },
+                    // {
+                    //     text: 'Not Selected',
+                    //     action: function ( e, dt, node, config ) {
+                    //         $.fn.dataTable.ext.search.push(
+                    //             function (settings, data, dataIndex){
+                    //                 return ($(datatable.row(dataIndex).node()).hasClass('selected')) ? false : true;
+                    //             }
+                    //         );
+                    //
+                    //         datatable.draw();
+                    //
+                    //         $.fn.dataTable.ext.search.pop();
+                    //     }
+                    // },
                     {
                         text: 'All',
                         action: function ( e, dt, node, config ) {
-                            dt.column( pos_ignore_column ).search("").draw();
+                            datatable.draw();
                         }
                     }
                 ]
+            },
+            {
+                text: 'Clear',
+                action: function ( e, dt, node, config ) {
+                    datatable.columns().every( function (index) {
+                        $('#datatable_wrapper .dataTables_scrollHeadInner thead tr:eq(1) td:eq(' + index + ') input').val('');
+                    });
+                    datatable.state.clear();
+                    datatable.draw();
+                }
             }
 
         ],
@@ -469,27 +440,12 @@ $(document).ready(function() {
 		}
 	});
 
-    //keep count of selected rows
-    datatable.on( 'select', function ( e, dt, type, indexes ) {
-        countVideos(dt, type);
-        updateSelection(dt, type);
-        console.dir(e);
-
-
-    } );
-    datatable.on( 'deselect', function ( e, dt, type, indexes ) {
-        countVideos(dt, type);
-        updateSelection(dt, type);
-        console.dir(e);
-    } );
-
     //load images when changing pages instead of table init
     $('#datatable').on( 'draw.dt', function () {
         console.log( 'Redraw occurred at: '+new Date().getTime() );
         $(".myThumbnail:visible").each(function () {
             $(this).attr('src',$(this).data('source'));
         });
-
     } );
 
     activate_columns_search();
@@ -521,73 +477,6 @@ $(document).ready(function() {
 
 
 });
-
-function updateSelection(dt, type) {
-    //ajax send selection
-    var ids = $.map(dt.rows({ selected: true }).data(), function (item) {
-        return item['id']
-    });
-
-    if (ids.length == 0) {
-        $.ajax({
-            method: "GET"
-            ,url: '/videos_selection_all_remove'
-        })
-            .done(function( response ) {
-                console.log( response.result );
-            })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
-                // dt.table().off('deselect');
-                // dt.deselect();
-                swal("Oops...Something went wrong selecting none! please try again", errorThrown, "error");
-
-                // datatable.on( 'deselect', function ( e, dt, type, indexes ) {
-                //     countVideos(dt, type);
-                //     updateSelection(dt, type);
-                //     console.dir(e);
-                // } );
-                return false;
-
-            });
-    } else {
-        $.ajax({
-            method: "POST"
-            ,url: '/videos_selection'
-            ,data: { _token: CSRF_TOKEN, _method: 'PUT', ids: ids }
-        })
-            .done(function( response ) {
-                console.log( response.result );
-            })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
-                // dt.table().off('deselect');
-                // dt.deselect();
-                swal("Oops...Something went wrong selecting the rows! please try again", errorThrown, "error");
-
-                // datatable.on( 'deselect', function ( e, dt, type, indexes ) {
-                //     countVideos(dt, type);
-                //     updateSelection(dt, type);
-                //     console.dir(e);
-                // } );
-                return false;
-
-            });
-    }
-}
-
-function  fncEditBulk(ids) {
-    $.ajax({
-        method: "POST"
-        ,url: '/videos_selection'
-        ,data: { _token: CSRF_TOKEN, _method: 'PUT', ids: ids }
-    })
-        .done(function( response ) {
-            console.log( response.result );
-            window.location.href = "/videos_edit_bulk";
-        })
-        .fail(function( jqXHR, textStatus, errorThrown ) {
-            swal("Oops...Something went wrong!", errorThrown, "error");
-        });
-}
 
 function playlistPanelToggle(e) {
 	var form       = $(this).parent('form');
@@ -636,6 +525,7 @@ function playlistPanelToggle(e) {
 		,contentType: false
 	})
 		.done(function( response ) {
+		    handleRedirect(response);
 			if (!response.hasOwnProperty('result')){
                 swal("Oops...Something went wrong!", "Error talking with the server.", "error");
 
@@ -697,6 +587,7 @@ function playlistUpdateOrder(order) {
 		,data: { _token: CSRF_TOKEN, _method: 'POST', order: order}
 	})
 		.done(function( response ) {
+		    handleRedirect();
 			console.log( response.result );
 		})
 		.fail(function( jqXHR, textStatus, errorThrown ) {
@@ -721,12 +612,24 @@ function showPlaylistInfo(content) {
 }
 
 function activate_columns_search() {
+    var state = datatable.state.loaded();
+
 	datatable.columns().every( function (index) {
-        $('#datatable_wrapper .dataTables_scrollHeadInner thead tr:eq(1) td:eq(' + index + ') input').on('keyup change', function () {
+        var input = $('#datatable_wrapper .dataTables_scrollHeadInner thead tr:eq(1) td:eq(' + index + ') input');
+        input.on('keyup change', function () {
 			datatable.column($(this).parent().index() + ':visible')
 				.search(this.value)
 				.draw();
 		});
+
+        // restore saved filters
+        if ( state ) {
+            var colSearch = state.columns[index].search;
+
+            if ( colSearch.search ) {
+                input.val( colSearch.search );
+            }
+        }
 	});
 }
 
@@ -754,6 +657,7 @@ function playVideo(id) {
     $(".img-overlay").hide();
     $.ajax({ method: "GET", url: '/videos/'+id+'/embed'})
         .done(function( response ) {
+            handleRedirect();
             if (response.result == 'ok') {
             	//set title
             	if (response.title){
@@ -799,13 +703,6 @@ function deleteVideo(e){
         });
 }
 
-function countVideos(dt, type) {
-    if ( type === 'row' ) {
-        // count selected rows
-        $('#videos-count').html(datatable.rows( { selected: true } ).count());
-    };
-}
-
 function imageOverlayShow(e) {
     $(".img-overlay").children('img').attr('src', $(this).attr('src'));
     $(".img-overlay").show();
@@ -813,4 +710,11 @@ function imageOverlayShow(e) {
 
 function imageOverlayHide(e) {
 	$(".img-overlay").hide();
+}
+
+function handleRedirect(data) {
+    if (data.redirect) {
+        // data.redirect contains the string URL to redirect to
+        window.location.href = data.redirect;
+    }
 }

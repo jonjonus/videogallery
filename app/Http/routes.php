@@ -83,3 +83,8 @@ Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('cache:clear');
     dd("cleared.");
 });
+
+
+/* tests */
+Route::get('test_ajax_load', 'TestController@ajax_load');
+Route::get('test_index', 'TestController@index');

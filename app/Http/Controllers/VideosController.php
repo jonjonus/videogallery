@@ -371,7 +371,7 @@ class VideosController extends Controller
     }
 
     /* DATATABLES */
-    public function datatables_load($videoId = null)
+    public function datatables_load($arr_video_ids = null)
     {
         $time_start = microtime(true);
 
@@ -398,8 +398,8 @@ class VideosController extends Controller
             ->leftJoin('tag_video', 'videos.id', '=', 'tag_video.video_id')
             ->leftJoin('services', 'videos.service_id', '=', 'services.id')
             ->select('videos.*', 'services.name AS service_name', DB::raw('group_concat(DISTINCT metatext_video.metatext_id) AS metatexts_ids'), DB::raw('group_concat(DISTINCT tag_video.tag_id) AS tags_ids'))
-            ->when($videoId, function ($query) use ($videoId) {
-                return $query->where('videos.id', $videoId);
+            ->when($arr_video_ids, function ($query) use ($arr_video_ids) {
+                return $query->whereIn('videos.id', $arr_video_ids);
             })
             ->groupBy('videos.id')
             ->get();
@@ -416,7 +416,8 @@ class VideosController extends Controller
             $video_arr = [];
             $video_arr['id'] = $video->id;
             $video_arr['cloud_id'] = $video->cloud_id;
-            $video_arr['thumbnail'] = $video->thumbnail_hq;
+            if (env('LOCAL_MODE')) $video_arr['thumbnail'] = '';
+            else $video_arr['thumbnail'] = $video->thumbnail_hq;
             $video_arr['title'] = $video->title;
             $video_arr['name'] = $video->name;
             $video_arr['description'] = $video->description;
@@ -510,98 +511,101 @@ class VideosController extends Controller
 
     public function datatables_update(Request $request)
     {
-        $attributes = $request->get("data");
-        $videoId = array_keys($attributes)[0];
-        $video = Video::findOrFail($videoId); //Video::whereIn('id', $videoIds)->with('metatexts', 'tags')->get()->keyBy('id');
-        // Single-Value-Columns
-        $svc = $video->getFillable();
+        $arr_videos = $request->get("data");
+        foreach ($arr_videos as $key => $arr_video){
+            $video = Video::findOrFail($key); //Video::whereIn('id', $videoIds)->with('metatexts', 'tags')->get()->keyBy('id');
+            // Single-Value-Columns
+            $svc = $video->getFillable();
 
-        // Multiple-Value-Columns
+            // Multiple-Value-Columns
 //        $mvc = ['metatexts'];
-        $tagtypes_objs = Tagtype::all()->keyBy('id');
+            $tagtypes_objs = Tagtype::all()->keyBy('id');
 //        $tagtypes = Tagtype::lists('name')->toArray();
 //        array_walk($tagtypes, function (&$e) {
 //            $e = 'tags_' . $e;
 //        });
 //        $mvc = array_merge($mvc, $tagtypes);
 
-        try {
-            $allTags = [];
-            $allMetatexts = [];
+            try {
+                $allTags = [];
+                $allMetatexts = [];
 
-            foreach ($attributes[$videoId] as $keyField => $valueField) {
-                //process single-value-columns (fillable)
-                if (in_array($keyField, $svc)) {
-                    //TODO it should differentiate between null and false
-                    switch ($keyField){
-                        case 'produced_at':
-                            //validate date, I guess this was done for a strange format that what coming from youtube, but vimeo is ISO so we can store it as is
-                            //TODO make helper function
-                            $format = 'm-Y';
-                            $d = \DateTime::createFromFormat($format, $valueField);
-                            if (!$d){
-                                //format is not m-Y so treat as normal date
-                                $video->$keyField = $valueField;
-                            } else {
-                                if ($d && $d->format($format) != $valueField) throw new \Exception("Invalid Date (Produced)");
-                                $video->$keyField = $d->format('Y-m-d');
-                            }
-                            break;
-                        case 'new':
-                        case 'ignore':
-                            $video->$keyField = ($valueField == "1" ? true : false);
-                            break;
-                        default:
-                            $video->$keyField = ($valueField != '' ? $valueField : null);
-                            break;
+                foreach ($arr_video as $keyField => $valueField) {
+                    //process single-value-columns (fillable)
+                    if (in_array($keyField, $svc)) {
+                        //TODO it should differentiate between null and false
+                        switch ($keyField){
+                            case 'name':
+                                break; //server-side readonly
+                            case 'produced_at':
+                                //validate date, I guess this was done for a strange format that what coming from youtube, but vimeo is ISO so we can store it as is
+                                //TODO make helper function
+                                $format = 'm-Y';
+                                $d = \DateTime::createFromFormat($format, $valueField);
+                                if (!$d){
+                                    //format is not m-Y so treat as normal date
+                                    $video->$keyField = $valueField;
+                                } else {
+                                    if ($d && $d->format($format) != $valueField) throw new \Exception("Invalid Date (Produced)");
+                                    $video->$keyField = $d->format('Y-m-d');
+                                }
+                                break;
+                            case 'new':
+                            case 'ignore':
+                                $video->$keyField = ($valueField == "1" ? true : false);
+                                break;
+                            default:
+                                $video->$keyField = ($valueField != '' ? $valueField : null);
+                                break;
+                        }
+                    }
+                    //TODO enviar el id y nombre x separado!!!!
+                    //client
+                    elseif ($keyField == 'client'){
+                        $client = Client::find($valueField['id']);
+                        if (!$client) {
+                            $client = new Client;
+                            $client->name = $valueField['id'];
+                            $client->save();
+                        }
+                        $video->client_id = $client->id;
+                    }
+                    //process multiple-value-columns
+                    //TODO method to get function dynamically and avoid the if?
+                    //metatexts
+                    elseif ($keyField == 'metatexts-many-count') {
+                        if ($arr_video['metatexts-many-count'] != 0)
+                            $allMetatexts = $this->createAndAppendNewMetatexts(array_column($arr_video['metatexts'], 'id'));
+                        else
+                            $allMetatexts = array();
+
+                        $video->metatexts()->sync($allMetatexts);
+                    }
+                    //tags
+                    elseif (strpos($keyField, 'tags_') !== false) {
+                        //TODO tags should we a polymorfic relation
+                        $tagtype_id_requested = (int)str_replace('tags_', '', $keyField);
+
+                        if ($keyField != 'tags_'.$tagtype_id_requested.'-many-count') {
+                            $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]));
+                        }
                     }
                 }
-                //TODO enviar el id y nombre x separado!!!!
-                //client
-                elseif ($keyField == 'client'){
-                    $client = Client::find($valueField['id']);
-                    if (!$client) {
-                        $client = new Client;
-                        $client->name = $valueField['id'];
-                        $client->save();
-                    }
-                    $video->client_id = $client->id;
-                }
-                //process multiple-value-columns
-                //TODO method to get function dynamically and avoid the if?
-                //metatexts
-                elseif ($keyField == 'metatexts-many-count') {
-                    if ($attributes[$videoId]['metatexts-many-count'] != 0)
-                        $allMetatexts = $this->createAndAppendNewMetatexts(array_column($attributes[$videoId]['metatexts'], 'id'));
-                    else
-                        $allMetatexts = array();
-
-                    $video->metatexts()->sync($allMetatexts);
-                }
-                //tags
-                elseif (strpos($keyField, 'tags_') !== false) {
-                    //TODO tags should we a polymorfic relation
-                    $tagtype_id_requested = (int)str_replace('tags_', '', $keyField);
-
-                    if ($keyField != 'tags_'.$tagtype_id_requested.'-many-count') {
-                        $allTags = array_merge($allTags, $this->createAndAppendNewTags(array_column($valueField, 'id'), $tagtypes_objs[$tagtype_id_requested]));
-                    }
-                }
+                $video->tags()->sync($allTags);
+                $video->save();
+            } catch (\Exception $e) {
+                header('HTTP/1.1 500 (' . $e->getCode() . ') ' . $e->getMessage());
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode(array(
+                    "result" => "error",
+                    "message" => "An error occurred trying to save the field (" . $e->getCode() . " - " . $e->getMessage() . ")",
+                    "error" => $e->getMessage(),
+                    "code" => $e->getCode(),
+                ));
+                exit;
             }
-            $video->tags()->sync($allTags);
-            $video->save();
-        } catch (\Exception $e) {
-            header('HTTP/1.1 500 (' . $e->getCode() . ') ' . $e->getMessage());
-            header('Content-Type: application/json; charset=UTF-8');
-            echo json_encode(array(
-                "result" => "error",
-                "message" => "An error occurred trying to save the field (" . $e->getCode() . " - " . $e->getMessage() . ")",
-                "error" => $e->getMessage(),
-                "code" => $e->getCode(),
-            ));
-            exit;
         }
 
-        return $this->datatables_load($video->id);
+        return $this->datatables_load(array_keys($arr_videos));
     }
 }
