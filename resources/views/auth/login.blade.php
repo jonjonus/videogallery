@@ -71,5 +71,5 @@
 @endsection
 
 @section(('stylesheets'))
-    <link href="/Datatables/Bootstrap-3.3.7/css/bootstrap.min.css" rel='stylesheet' type='text/css'>
+    <link href="Datatables/Bootstrap-3.3.7/css/bootstrap.min.css" rel='stylesheet' type='text/css'>
 @endsection
