@@ -160,31 +160,8 @@ $(document).ready(function() {
     ];
 
 	editor = new $.fn.dataTable.Editor( {
-		// ajax: "/datatables_update",
 		table: "#datatable",
         template: '#customForm',
-        /*ajax: function ( method, url, data, success, error ) {
-            // var modifier = editor.modifier();
-            // if ( modifier ) {
-            //     var data = datatable.row( modifier ).data();
-            //     do something with `data`
-            // }
-
-            $.ajax( {
-                type: 'POST',
-                url:  '/datatables_update',
-                data: data,
-                dataType: "json",
-                success: function (json) {
-                    success( json );
-                },
-                error: function( jqXHR, textStatus, errorThrown ) {
-                    swal("Oops...Something went wrong!", errorThrown, "error");
-                    error( jqXHR, textStatus, errorThrown );
-                    editor.close()
-                }
-            } );
-        },*/
         ajax: '/datatables_update',
 		idSrc: "id",
 		fields: editor_columns.concat(editor_tag_columns),
@@ -550,7 +527,9 @@ function playlistPanelToggle(e) {
 			$('.btn-playlist-panel').prop('disabled', false);
 		})
 		.fail(function( jqXHR, textStatus, errorThrown ) {
-			if (textStatus == 'error'){
+		    if (jqXHR.status == 401)
+                window.location.href = '/login';
+			else if (textStatus == 'error'){
 				var errors = $.parseJSON(jqXHR.responseText);
 				var error_message = '';
 				$.each(errors, function(key,value){
@@ -587,12 +566,15 @@ function playlistUpdateOrder(order) {
 		,data: { _token: CSRF_TOKEN, _method: 'POST', order: order}
 	})
 		.done(function( response ) {
-		    handleRedirect();
+		    handleRedirect(response);
 			console.log( response.result );
 		})
 		.fail(function( jqXHR, textStatus, errorThrown ) {
-			alert("There was an error saving the videos order.")
 			console.log( errorThrown );
+            if (jqXHR.status == 401)
+                window.location.href = '/login';
+            else
+                alert("There was an error saving the videos order.")
 		});
 }
 
@@ -657,7 +639,7 @@ function playVideo(id) {
     $(".img-overlay").hide();
     $.ajax({ method: "GET", url: '/videos/'+id+'/embed'})
         .done(function( response ) {
-            handleRedirect();
+            handleRedirect(response);
             if (response.result == 'ok') {
             	//set title
             	if (response.title){
@@ -679,7 +661,10 @@ function playVideo(id) {
             }
         })
         .fail(function( jqXHR, textStatus, errorThrown ) {
-            if (textStatus == 'error'){
+            console.log( errorThrown );
+            if (jqXHR.status == 401)
+                window.location.href = '/login';
+            else if (textStatus == 'error'){
                 alert(errorThrown);
             }
         })

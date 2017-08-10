@@ -37,8 +37,9 @@
     @yield('modals')
     <script>
         var csrf = '{{ csrf_token() }}';
+        $(function () {
+            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN' : csrf } });
+        });
     </script>
-    <script src="/js/app.js"></script>
-    {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 </body>
 </html>
