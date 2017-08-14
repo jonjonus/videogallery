@@ -50,6 +50,6 @@ class CreateMetatextsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('metatexts');
+        Schema::dropIfExists('metatexts');
     }
 }

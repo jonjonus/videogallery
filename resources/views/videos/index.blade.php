@@ -36,6 +36,7 @@
     <table id="datatable" class="table table-striped table-bordered" cellspacing="0">
         <thead>
         <tr>
+            {{-- TODO hacer un array con las columnas para poder buscar por nombre como indice y evitar las $pos_--}}
             {{-- 0 --}}<th>Select</th>
             {{-- 1 --}}<th>Thumbnail</th>
             {{-- 2 --}}<th></th> {{-- Actions --}}
@@ -45,9 +46,9 @@
             {{-- 6 --}}<th>Produced</th>
             {{-- 7 --}}<th>Client</th>
             {{-- 8 --}}<th>Name</th>
-            {{-- 9 --}}<th>New</th>     <?php $pos_new_column   = 8;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
-            {{-- 10--}}<th>Ignore</th> <?php $pos_ignore_column = 9;                               ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
-            {{-- 11--}}<th>Meta</th>    <?php $pos_meta_column  = 11; ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 9 --}}<th>New</th>     <?php $pos_new_column    = 9;  ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 10--}}<th>Ignore</th>  <?php $pos_ignore_column = 10;  ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
+            {{-- 11--}}<th>Meta</th>    <?php $pos_meta_column   = 11; ?> {{-- NOTE: if columns added or removed UPDATE this number! --}}
             {{-- 12--}} <?php $pos_first_tags_column = 12; ?>
             @foreach ($tagTypes as $tagType)
                 <th>{{ $tagType->name }}</th>

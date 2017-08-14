@@ -36,7 +36,7 @@ class CreatePlaylistsTable extends Migration
 //		    $table->dropColumn('playlist_id');
 //	    });
 	    DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::drop('playlists');
+        Schema::dropIfExists('playlists');
 	    DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

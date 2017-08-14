@@ -40,6 +40,6 @@ class CreatePlaylistVideoTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('playlist_video');
+		Schema::dropIfExists('playlist_video');
 	}
 }

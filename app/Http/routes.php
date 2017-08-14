@@ -12,6 +12,7 @@ Route::resource('metatexts',       'MetatextsController');
 Route::resource('tagtypes',        'TagtypesController');
 Route::resource('tags',            'TagsController');
 Route::resource('videos',          'VideosController');
+Route::resource('users',           'UsersController');
 
 Route::get('videos_selection_all_remove', 'VideosController@selection_all_remove');
 Route::put('videos/{videos}/selection_one',	   	'VideosController@selection_add');

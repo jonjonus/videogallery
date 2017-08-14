@@ -1,3 +1,4 @@
+@if ( Route::getCurrentRoute()->getPath() != 'login')
 <nav id="nav-menu" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -22,13 +23,20 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">Catalog</li>
                         <li><a href="{{ action('VideosController@index') }}"        >Videos</a></li>
                         <li><a href="{{ action('PlaylistsController@index') }}"     >Playlists</a></li>
                         <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">CRUD</li>
                         <li><a href="{{ action('ClientsController@index') }}"       >Clients</a></li>
                         <li><a href="{{ action('MetatextsController@index') }}"     >Metatexts</a></li>
                         <li><a href="{{ action('TagsController@index') }}"          >Tags</a></li>
                         <li><a href="{{ action('TagtypesController@index') }}"      >Tag Types</a></li>
+                        @if (Auth::user()->hasRole('admin'))
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Admin</li>
+                        <li><a href="{{ action('UsersController@index') }}">Users</a></li>
+                        @endif
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ action('YoutubeController@youtube_index') }}">Update Youtube videos</a></li>
                         <li><a href="{{ action('YoutubeController@vimeo_index') }}">Update Vimeo videos</a></li>
@@ -67,3 +75,4 @@
         </div>
     </div>
 </nav>
+@endif

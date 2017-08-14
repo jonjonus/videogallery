@@ -40,6 +40,6 @@ class CreateMetatextVideoTable extends Migration
      */
     public function down()
     {
-        Schema::drop('metatext_video');
+        Schema::dropIfExists('metatext_video');
     }
 }
