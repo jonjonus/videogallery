@@ -1,5 +1,27 @@
-.row {
-    height: 100%;
+body {
+    padding-top: 70px;
+}
+
+.navbar {
+    min-height: 70px !important;
+}
+
+.navbar-brand {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin-right: 0px !important;
+    }
+}
+
+.navbar-right {
+    margin-top: 24px !important;
+}
+.navbar-link {
+    color: #337ab7 !important;
 }
 
 .list-group-item {
@@ -8,4 +30,46 @@
 }
 .player {
     display: flex;
+}
+
+.col-wop {
+    padding: 0px !important;
+    padding-left: 5px !important;
+    padding-right: 0px !important;
+    margin-top: 10px;
+}
+
+.embed-custom {
+    width: 95%;
+    margin-top: 10px;
+}
+
+h1.title {
+    text-align: left;
+    padding: 20px 0 40px;
+    margin: 0;
+    font-family: Tahoma;
+    color: #80ba26;
+}
+
+h2.description {
+    margin-bottom: 30px !important;
+}
+
+.bg-tilt {
+    margin-top: 20px;
+    position: absolute;
+    width: 93%;
+    height: 95%;
+    /*max-height: 385px;*/
+    display: block;
+    background-color: #80ba26;
+    border-radius: 10px;
+    -ms-transform: rotate(7deg);
+    -webkit-transform: rotate(7deg);
+    transform: rotate(4deg);
+}
+
+.col-video {
+    margin-bottom: 40px;
 }

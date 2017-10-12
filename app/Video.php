@@ -184,6 +184,16 @@ class Video extends Model
         return "";
     }
 
+    public function getStyledEmbedAttribute()
+    {
+        if ($this->service->name == 'Vimeo'){
+//            return substr_replace($this->embed, ' class="embed-responsive-item"', 7, 0);
+            $iframe = preg_replace("/width=\"[0-9]*\"/", 'width="100%"', $this->embed);
+            $iframe = preg_replace("/height=\"[0-9]*\"/", 'height="100%"', $iframe);
+            return $iframe;
+        }
+    }
+
     // public function getProducedAtAttribute()
     // {
     //     // $this->attributes['produced_at'] = Carbon::createFromFormat('Y-m-d', $date);
@@ -196,12 +206,7 @@ class Video extends Model
         return $this->tags->where('tagtype_id', $tagtype->id)->lists('id')->toArray();
     }
 
-    public function getStyledEmbed()
-    {
-        if ($this->service()->name == 'Vimeo'){
-            return substr_replace($this->embed, ' class="embed-responsive-item"', 7, 0);
-        }
-    }
+
 
     public function hasAttribute($attr)
     {

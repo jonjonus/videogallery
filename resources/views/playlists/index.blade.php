@@ -27,7 +27,6 @@
                     <td class="table-text"><div class="text-small">{{ $playlist->updated_at->format('Y-m-d')}}</div></td>
                     <td>
                         @include('common.form-delete',  ['action' => 'PlaylistsController@destroy', 'id' => $playlist->id])
-                        @include('common.form-edit',    ['action' => 'PlaylistsController@edit', 'id' => $playlist->id])
                         @include('playlists.form-load', ['action' => 'PlaylistsController@load', 'id' => $playlist->id])
                     </td>
                 </tr>

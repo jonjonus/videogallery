@@ -25,7 +25,7 @@ class PlaylistsController extends Controller
     public function index()
     {
         $playlists   = Playlist::paginate(10);
-        $actionNew   = 'PlaylistsController@create';
+        $actionNew   = 'VideosController@index';
         $moreButtons = 'playlists._moreButtons';
         return view('playlists.index', compact ('playlists', 'actionNew', 'moreButtons') );
     }

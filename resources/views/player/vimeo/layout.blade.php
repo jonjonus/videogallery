@@ -12,10 +12,11 @@
     <!-- Bootstrap -->
     {{--<link href="css/bootstrap.min.css" rel="stylesheet">--}}
     <link rel="stylesheet" href="/css/player/vimeo.css">
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">--}}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,25 +26,52 @@
     <![endif]-->
 </head>
 <body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <a class="navbar-brand" href="http://creativa.com.au/"><img src="/imgs/Logo_130x50.png"></a>
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://creativa.com.au/">
+                <img alt="Brand" src="/imgs/Logo_130x50.png">
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="nav navbar-nav navbar-right">
+                <a href="mailto:hello@creativa.com.au" class="navbar-link"><img src="/imgs/at.png"> hello@creativa.com.au</a>
+                <a href="http://creativa.com.au/" class="navbar-link"><img src="/imgs/tag.png"> 207 Glen Huntly Road, Elsternwick 3185</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+{{--<nav class="navbar navbar-default navbar-static-top">--}}
+    {{--<div class="container-fluid">--}}
+        {{--<div class="navbar-header">--}}
+            {{--<a class="navbar-brand" href="http://creativa.com.au/"><img src="/imgs/Logo_130x50.png"></a>--}}
+        {{--</div>--}}
+        {{--<p class="navbar-text navbar-right">--}}
+            {{----}}
+        {{--</p>--}}
+        {{--<p class="navbar-text navbar-right">--}}
+        {{--</p>--}}
+    {{--</div>--}}
+{{--</nav>--}}
 @if($alert)
     <div class="alert alert-info alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <strong>Heads-up!</strong> You are looking at a password protected playlist.
     </div>
 @endif
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 logo">
-            <a href="http://creativa.com.au/"><img src="/imgs/creativa.png"></a>
-        </div>
-        <div class="col-md-6 info">
-            <a href="mailto:hello@creativa.com.au"><img src="/imgs/at.png"> hello@creativa.com.au</a>
-            <a href="http://creativa.com.au/"><img src="/imgs/tag.png"> 207 Glen Huntly Road, Elsternwick 3185</a>
-        </div>
-    </div>
-</div><h1 class="title">{{ $playlist->title }}</h1>
-<h2 class="description">{{ $playlist->description }}</h2>
-<div class="container-fluid">
+    <h1 class="title">{{ $playlist->title }}</h1>
+    <h2 class="description">{{ $playlist->description }}</h2>
     @yield('content')
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -53,6 +81,6 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+@yield('scripts')
 </body>
 </html>

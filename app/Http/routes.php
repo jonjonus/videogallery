@@ -79,6 +79,11 @@ Route::get('playernew/{title}', 'PlayerController@player_by_title_new');
 Route::get('datatables_load', 'VideosController@datatables_load');
 Route::post('datatables_update', 'VideosController@datatables_update');
 
+Route::get('datatables_load', 'VideosController@datatables_load');
+Route::post('datatables_update', 'VideosController@datatables_update');
+
+
+
 /* Cache */
 Route::get('/clear-cache', function() {
     $exitCode = Artisan::call('cache:clear');
