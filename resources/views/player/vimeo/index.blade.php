@@ -3,8 +3,8 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12 col-md-8 col-lg-9 col-video">
-        <div class="bg-tilt"></div>
-        <div class="embed-responsive embed-responsive-16by9 embed-custom">
+        {{--<div class="bg-tilt"></div>--}}
+        <div class="embed-responsive embed-responsive-4by3 embed-custom">
             {!! $playlist->videos()->first()->styledEmbed !!}
         </div>
     </div>
