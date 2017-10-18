@@ -72,8 +72,8 @@ Route::delete('playlist_remove/{videos}', 'PlaylistsController@remove');
 
 /* Player */
 Route::get('player/id/{playlist}', 'PlayerController@player_by_id');
+Route::get('playerold/{title}', 'PlayerController@player_by_title_old');
 Route::get('player/{title}', 'PlayerController@player_by_title');
-Route::get('playernew/{title}', 'PlayerController@player_by_title_new');
 
 /* DataTables and Editor */
 Route::get('datatables_load', 'VideosController@datatables_load');

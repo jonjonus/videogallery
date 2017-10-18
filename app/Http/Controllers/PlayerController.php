@@ -24,7 +24,7 @@ class PlayerController extends Controller
         return view('player.index_vimeo', compact('playlist') );
     }
 
-    public function player_by_title_new($title, Request $request)
+    public function player_by_title($title, Request $request)
     {
         $playlist = Playlist::where('title', urldecode($title))->first();
 
@@ -41,7 +41,7 @@ class PlayerController extends Controller
         return view('player.vimeo.index', compact('playlist','alert') );
     }
 
-    public function player_by_title($title, Request $request)
+    public function player_by_title_old($title, Request $request)
     {
         $playlist = Playlist::where('title', urldecode($title))->first();
 
