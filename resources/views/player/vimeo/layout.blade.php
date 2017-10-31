@@ -29,24 +29,17 @@
     <![endif]-->
 </head>
 <body>
-{{--<nav class="navbar navbar-default navbar-fixed-top">--}}
-    {{--<div class="container-fluid">--}}
-        {{--<div class="navbar-header">--}}
-            {{--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">--}}
-                {{--<a class="navbar-brand" href="http://creativa.com.au/"><img src="/imgs/Logo_130x50.png"></a>--}}
-                {{--<span class="sr-only">Toggle navigation</span>--}}
-                {{--<span class="icon-bar"></span>--}}
-                {{--<span class="icon-bar"></span>--}}
-                {{--<span class="icon-bar"></span>--}}
-            {{--</button>--}}
-            {{--<a class="navbar-brand" href="http://creativa.com.au/">--}}
-                {{--<img alt="Brand" src="/imgs/Logo_130x50.png">--}}
-            {{--</a>--}}
-        {{--</div>--}}
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://creativa.com.au/">
+                <img alt="Brand" src="/imgs/Logo_130x50.png">
+            </a>
+        </div>
 
 
-    {{--</div>--}}
-{{--</nav>--}}
+    </div>
+</nav>
 {{--<nav class="navbar navbar-default navbar-static-top">--}}
     {{--<div class="container-fluid">--}}
         {{--<div class="navbar-header">--}}
