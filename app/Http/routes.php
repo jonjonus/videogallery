@@ -70,6 +70,8 @@ Route::post('playlist_updateOrder',       'PlaylistsController@update_order');
 Route::post('playlist_load',              'PlaylistsController@load');
 Route::delete('playlist_remove/{videos}', 'PlaylistsController@remove');
 
+Route::post('playlist_save_search' , 'PlaylistsController@saveSearch');
+
 /* Player */
 Route::get('player/id/{playlist}', 'PlayerController@player_by_id');
 Route::get('playerold/{title}', 'PlayerController@player_by_title_old');

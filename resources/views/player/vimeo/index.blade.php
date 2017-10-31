@@ -8,6 +8,10 @@
             {!! $playlist->videos()->first()->styledEmbed !!}
         </div>
     </div>
+
+    <h1 class="title">{{ $playlist->title }}</h1>
+    <h2 class="description">{{ $playlist->description }}</h2>
+
     <div class="col-xs-12 col-md-4 col-lg-3">
         <div class="list-group">
             @foreach ($playlist->videos()->get() as $video)
@@ -28,6 +32,12 @@
                     </div>
                 </a>
             @endforeach
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="nav navbar-nav navbar-right">
+                <div class="links"><a href="mailto:hello@creativa.com.au" class="navbar-link"><img src="/imgs/at.png"> hello@creativa.com.au</a></div>
+                <div class="links"><a href="http://creativa.com.au/" class="navbar-link"><img src="/imgs/tag.png"> 207 Glen Huntly Road, Elsternwick 3185</a></div>
+            </div>
         </div>
     </div>
 </div>

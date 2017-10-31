@@ -7,8 +7,8 @@
 	        @include('common.errors')
 		</div> <!-- end row -->
 		{!! Form::model($playlist, [
-									'class' 	=> 'form-horizontal',
-									]) !!}
+				'class' 	=> 'form-horizontal',
+				]) !!}
 			<!-- Form -->
 			<div class="row">
 				@include('playlists._form', ['disabledFields' => 'disabled'])

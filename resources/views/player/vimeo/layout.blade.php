@@ -9,6 +9,9 @@
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
     <title>{{ $playlist->title }}</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
+
     <!-- Bootstrap -->
     {{--<link href="css/bootstrap.min.css" rel="stylesheet">--}}
     <link rel="stylesheet" href="/css/player/vimeo.css">
@@ -40,13 +43,7 @@
                 <img alt="Brand" src="/imgs/Logo_130x50.png">
             </a>
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <div class="nav navbar-nav navbar-right">
-                <a href="mailto:hello@creativa.com.au" class="navbar-link"><img src="/imgs/at.png"> hello@creativa.com.au</a>
-                <a href="http://creativa.com.au/" class="navbar-link"><img src="/imgs/tag.png"> 207 Glen Huntly Road, Elsternwick 3185</a>
-            </div>
-        </div>
+
 
     </div>
 </nav>
@@ -70,8 +67,6 @@
 @endif
 
 <div class="container-fluid">
-    <h1 class="title">{{ $playlist->title }}</h1>
-    <h2 class="description">{{ $playlist->description }}</h2>
     @yield('content')
 </div>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
