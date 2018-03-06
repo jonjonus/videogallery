@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -16,7 +17,12 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         $request->user()->authorizeRoles(['admin']);
-        return view(('users.index'));
+        if ($request->ajax()){
+            return response()->json(User::all(['name','email'])->toArray());
+//            array_only($array, ['name', 'price']);
+        } else {
+            return view(('users.index'));
+        }
     }
 
     /**

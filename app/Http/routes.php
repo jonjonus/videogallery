@@ -84,6 +84,7 @@ Route::post('datatables_update', 'VideosController@datatables_update');
 Route::get('datatables_load', 'VideosController@datatables_load');
 Route::post('datatables_update', 'VideosController@datatables_update');
 
+Route::resource('user', 'UsersController');
 
 
 /* Cache */

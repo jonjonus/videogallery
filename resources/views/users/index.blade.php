@@ -1,16 +1,11 @@
 @extends('layouts.list')
 
 @section('index-content')
-   <div class="img-overlay"><img src="/imgs/creativa.png"></div>
-   <!-- Current Videos -->
-   {{--<table id="datatable" class="table table-hover table-bordered table-condensed">--}}
    <table id="datatable" class="table table-striped table-bordered" cellspacing="0">
       <thead>
          <tr>
-            <th>Select</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
+            <th>name</th>
+            <th>email</th>
          </tr>
       </thead>
    </table>
